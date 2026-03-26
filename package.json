@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "docenv": "^2.0.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  }
+}

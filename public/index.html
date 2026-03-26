@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saniya Shiju | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">SS.</div>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <img src="profile.jpg" alt="Saniya Shiju" class="profile-img">
+            <h1>Saniya Shiju</h1>
+            <p>Aspiring Software Developer & BCA Student</p>
+            <a href="#contact" class="btn">Get In Touch</a>
+        </section>
+
+        <section id="about" class="about container">
+            <div class="about-content">
+                <h2>About Me</h2>
+                <div class="about-card">
+                    <p>I am currently pursuing my <strong>Bachelors in Computer Applications (BCA)</strong>. I am passionate about building full-stack applications and exploring modern technology.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="skills container">
+            <h2>Technical Toolbox</h2>
+            <div class="skill-cards">
+                <div class="skill-card"><h3>Frontend</h3><p>HTML, CSS, JS, Tailwind</p></div>
+                <div class="skill-card"><h3>Backend</h3><p>Node.js, Express</p></div>
+                <div class="skill-card"><h3>Database</h3><p>PostgreSQL (Render)</p></div>
+                <div class="skill-card"><h3>Tools</h3><p>Git, GitHub, Render</p></div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section container">
+            <div class="contact-box">
+                <h2>Let's Build Something Together</h2>
+                <form action="/send-to-db" method="POST">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" name="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Message</label>
+                        <textarea name="message" rows="4" placeholder="How can I help you?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn submit-btn">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <button id="chat-btn" onclick="toggleChat()">💬 Chat with me</button>
+    <div id="chat-window">
+        <div id="chat-header">Portfolio Assistant</div>
+        <div id="chat-body">
+            <p class="bot-msg">Hi! I'm Saniya's AI assistant. Ask me anything about her projects or skills!</p>
+        </div>
+        <input type="text" id="chat-input" placeholder="Type and press Enter..." onkeypress="handleChat(event)">
+    </div>
+
+    <script>
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = (win.style.display === "none" || win.style.display === "") ? "flex" : "none";
+            if(win.style.display === "flex") document.getElementById('chat-input').focus();
+        }
+
+        async function handleChat(e) {
+            if (e.key === "Enter") {
+                const input = document.getElementById('chat-input');
+                const body = document.getElementById('chat-body');
+                const userMsg = input.value.trim();
+                
+                if (!userMsg) return;
+
+                // 1. Display user message
+                body.innerHTML += `<p class="user-msg">${userMsg}</p>`;
+                input.value = "";
+                body.scrollTop = body.scrollHeight;
+
+                // 2. Add a temporary "typing" indicator
+                const loadingId = "loading-" + Date.now();
+                body.innerHTML += `<p class="bot-msg" id="${loadingId}">...</p>`;
+                body.scrollTop = body.scrollHeight;
+
+                try {
+                    // 3. Fetch response from your Node.js backend
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: userMsg })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // 4. Replace loading indicator with actual AI response
+                    document.getElementById(loadingId).innerText = data.reply;
+                } catch (error) {
+                    document.getElementById(loadingId).innerText = "Error: Could not connect to the AI server.";
+                }
+                body.scrollTop = body.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
